@@ -28,4 +28,56 @@ class PlakaTuringMakinesi:
         
         return t
 
+    def calistir(self):
+        adim = 1
+        
+        while self.durum != "q_kabul" and self.durum != "q_red":
+            # hangi sembol
+            okunan = self.bant[self.kafa] if self.kafa < len(self.bant) else "_"
+            
+            print(f" Adım {adim} ")
+            print(f"Mevcut durum: {self.durum}")
+            print(f"Okunan sembol: {okunan}")
+            
+            # işlemi alma
+            islem = self.gecisler.get((self.durum, okunan))
+            
+            if islem is None:
+                # direkt red durumu
+                self.durum = "q_red"
+                print("Kafa hareketi: Dur (S)")
+            else:
+                yeni_durum, yazilacak, hareket = islem
+                self.bant[self.kafa] = yazilacak
+                self.durum = yeni_durum
+                
+                if hareket == "R":
+                    self.kafa += 1
+                    print("Kafa hareketi: Sağ (R)")
+                elif hareket == "L":
+                    self.kafa -= 1
+                    print("Kafa hareketi: Sol (L)")
+                else:
+                    print("Kafa hareketi: Dur (S)")
+                    
+            bant_metni = "".join(self.bant)
+            kafa_isareti = " " * self.kafa + "↑"
+            print("Bant içeriği:")
+            print(bant_metni)
+            print(kafa_isareti)
+            print()
+            
+            adim += 1
+
+        # son durum nihai
+        if self.durum == "q_kabul":
+            print("Sonuç: KABUL")
+        else:
+            print("Sonuç: RED")
+
+
+if __name__ == "__main__":
+    girdi = input("Lütfen plaka formatını giriniz: ")
     
+    makine = PlakaTuringMakinesi(girdi)
+    makine.calistir()
